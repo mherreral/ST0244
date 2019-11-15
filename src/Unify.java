@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -14,7 +15,8 @@ import java.util.regex.Pattern;
 /**
  * The class unify is made for evaluating expressions, it unifies the expression if there is a complete substitution
  * of the constraints from a file, and it fails when none of the recursive cases can be applied to the line that we are
- * working on
+ * working on.
+ * The character for substirution is: "°"
  */
 public class Unify {
     /**
@@ -29,6 +31,8 @@ public class Unify {
     static ArrayList<String> left;
     static ArrayList<String> right;
 
+    static ArrayList<String> substitutions = new ArrayList<>();
+
     /**
      * The main method where we call the recursive method unify with right and left, which are the right and left side
      * of all equalities.
@@ -39,11 +43,13 @@ public class Unify {
     public static void main(String[] args) {
         readFile("cs5.txt");
         unify(right, left);
+        finalSubstitutions();
     }
 
     /**
      * The readFile method works by passing to it, the name of the file we will read, and it just add into two arraylist
      * the left (before "=") and right (after "=") side of the equalities
+     *
      * @param name
      */
     static void readFile(String name) {
@@ -147,10 +153,14 @@ public class Unify {
             }
         }
         if (side == "right") {
+            substitutions.add(right.get(0) + " ° " + separatedL);
+            substitutions.add(right.get(0) + " ° " + separatedR);
             right.remove(0);
             right.add(0, separatedR);
             right.add(0, separatedL);
         } else {
+            substitutions.add(left.get(0) + " ° " + separatedL);
+            substitutions.add(left.get(0) + " ° " + separatedR);
             left.remove(0);
             left.add(0, separatedR);
             left.add(0, separatedL);
@@ -214,6 +224,19 @@ public class Unify {
     }
 
     /**
+     * This method prints the substitions that we made and delete the ones that are repeated
+     */
+    public static void finalSubstitutions() {
+        for (int i = 0; i < substitutions.size(); i++) {
+            for (int j = 0; j < substitutions.size(); j++) {
+                if (substitutions.get(i).equals(substitutions.get(j)))
+                    substitutions.remove(j);
+            }
+        }
+        System.out.println(Arrays.toString(substitutions.toArray()));
+    }
+
+    /**
      * The unify method is a recursive one, where the two sides of the equality are passed for unifying them.
      * It has 5 possible cases, the first of them is our base case, the one that says if the right side and left side
      * are empty.
@@ -242,7 +265,7 @@ public class Unify {
                 if (unnecessaryParentheses(left.get(0)))
                     delete(left.get(0), "left");
 
-                System.out.println(left.get(0) + " ° " + right.get(0));
+                substitutions.add(left.get(0) + " ° " + right.get(0));
                 right.remove(0);
                 left.remove(0);
                 unify(right, left);
@@ -260,7 +283,7 @@ public class Unify {
                 for (int i = 0; i < left.size(); i++) {
                     if (left.get(i).equals(var2)) {
                         String aux = left.get(0).replace(var2, var).trim();
-                        System.out.println(left.get(0) + " ° " + aux);
+                        substitutions.add(left.get(0) + " ° " + aux);
                         left.remove(i);
                         left.add(0, aux);
                     }
@@ -281,6 +304,7 @@ public class Unify {
                 for (int i = 0; i < right.size(); i++) {
                     if (right.get(i).equals(var2)) {
                         String aux = right.get(0).replace(var2, var).trim();
+                        substitutions.add(right.get(0) + " ° " + aux);
                         right.remove(i);
                         right.add(0, aux);
                     }
