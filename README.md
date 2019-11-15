@@ -14,7 +14,7 @@ Operating System: Linux 5.3.11-1-MANJARO
 Programming language: Java
 Complied with openjdk 11.0.5
 
-## Getting Started
+### Getting Started
 
 The proyect has a file called Makefile, which is in charge of compiling the program, it runs the set of test cointained in the "test"
 directory
