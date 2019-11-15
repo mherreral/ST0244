@@ -1,0 +1,2 @@
+bool -> bool = nat -> nat
+(bool -> bool) -> uwu = a -> Nat
