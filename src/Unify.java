@@ -154,9 +154,14 @@ class Unify {
         left = new ArrayList<>();
         right = new ArrayList<>();
         String line;
+            File file;
 
         try {
-            File file = new File("./", name);
+            if (name.startsWith("/")) {
+                file = new File(name);
+            } else {
+                file = new File("./", name);
+            }
             try (Scanner in = new Scanner(file)) {
                 while (in.hasNext()) {
                     line = processLine(in.nextLine().trim());
