@@ -1,0 +1,3 @@
+Bool1 = Bool1
+a -> b = Nat
+Nat = Bool

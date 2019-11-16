@@ -1,0 +1,3 @@
+bcbc1 = bcbc1
+pass -> pass = sand -> sand
+(meg -> cat) -> dog = (can -> dot) -> then

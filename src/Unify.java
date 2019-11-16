@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
+/*
  * Solution for the unification algorithm
  * Made by: Manuela Herrera López and Samuel Palacios Bernate
  */
@@ -16,43 +16,43 @@ import java.util.regex.Pattern;
  * The class unify is made for evaluating expressions, it unifies the expression if there is a complete substitution
  * of the constraints from a file, and it fails when none of the recursive cases can be applied to the line that we are
  * working on.
- * The character for substirution is: "°"
+ * The character for substitution is: "°"
  */
-public class Unify {
+class Unify {
     /**
      * global Patterns, replace and pattern that we use to define our grammar
      */
-    static Pattern replace = Pattern.compile("\\s+");
-    static Pattern pattern = Pattern.compile("^(?!^Nat$|^Bool$)[a-zA-Z]([a-zA-Z] | [0-9])*");
+    private Pattern replace = Pattern.compile("\\s+");
+    private Pattern pattern = Pattern.compile("^(?!^Nat$|^Bool$)[a-zA-Z]([a-zA-Z] | [0-9])*");
 
     /**
-     * the following two arrays are the left and the right side of te constraints
+     * the following two ArrayList are the left and the right side of te constraints
      */
-    static ArrayList<String> left;
-    static ArrayList<String> right;
+    private ArrayList<String> left;
+    private ArrayList<String> right;
 
-    static ArrayList<String> substitutions = new ArrayList<>();
+    private ArrayList<String> substitutions = new ArrayList<>();
 
     /**
-     * The main method where we call the recursive method unify with right and left, which are the right and left side
+     * The constructor method where we call the recursive method unify with right and left, which are the right and left side
      * of all equalities.
      * And also it calls the method readFile, which, as it's name says, read the file that we will work in
      *
-     * @param args
+     * @param nameFile name of the file to read
      */
-    public static void main(String[] args) {
-        readFile("cs5.txt");
+    Unify(String nameFile) {
+        readFile("./tests/" + nameFile);
         unify(right, left);
         finalSubstitutions();
     }
 
     /**
-     * The readFile method works by passing to it, the name of the file we will read, and it just add into two arraylist
+     * The readFile method works by passing to it, the name of the file we will read, and it just add into two ArrayList
      * the left (before "=") and right (after "=") side of the equalities
      *
-     * @param name
+     * @param name of the file to read
      */
-    static void readFile(String name) {
+    private void readFile(String name) {
         left = new ArrayList<>();
         right = new ArrayList<>();
         String line;
@@ -80,31 +80,31 @@ public class Unify {
     /**
      * This method take the "<EOL>" (end of line) from the line parameter and removes it
      *
-     * @param linea
-     * @return
+     * @param line to process
+     * @return line without <EOL>
      */
-    private static String processLine(String linea) {
-        linea = linea.replace("<EOL>", "");
-        return linea.trim();
+    private String processLine(String line) {
+        line = line.replace("<EOL>", "");
+        return line.trim();
     }
 
     /**
      * Here we print the file we've already read
      */
-    static void printFile() {
+    private void printFile() {
         for (int i = 0; i < left.size(); i++) {
             System.out.println(left.get(i) + " = " + right.get(i));
         }
     }
 
     /**
-     * This one is an auxiliar method for returning a boolean variable which says if the line we've
+     * This one is an auxiliary method for returning a boolean variable which says if the line we've
      * passed has some unnecessary parentheses that can be replaced later
      *
-     * @param line
-     * @return
+     * @param line with some unnecessary parentheses
+     * @return If the line has unnecessary parentheses
      */
-    private static Boolean unnecessaryParentheses(String line) {
+    private Boolean unnecessaryParentheses(String line) {
         boolean supervisor = true;
         boolean in = false;
         int cont = 0;
@@ -123,15 +123,15 @@ public class Unify {
     }
 
     /**
-     * This method is another auxiliar which receives as parameters line and side; line is the expression of a side,
+     * This method is another auxiliary which receives as parameters line and side; line is the expression of a side,
      * the one that is indicated in the side parameter. It find the principal "->" for helping the unify function.
      * it separate the right and the left side of the regex we've already introduced and it adds them to the arrays for
      * unifying later
      *
-     * @param line
-     * @param side
+     * @param line expression of a side
+     * @param side to evaluate
      */
-    public static void findPrincipal(String line, String side) {
+    private void findPrincipal(String line, String side) {
         String separatedR = "";
         String separatedL = "";
         String aux;
@@ -152,7 +152,7 @@ public class Unify {
                 }
             }
         }
-        if (side == "right") {
+        if (side.equals("right")) {
             substitutions.add(right.get(0) + " ° " + separatedL);
             substitutions.add(right.get(0) + " ° " + separatedR);
             right.remove(0);
@@ -172,10 +172,10 @@ public class Unify {
      * unnecessaryParentheses method, if the last one returns true; it removes the parentheses for adding later the
      * changed line in one of the arrays
      *
-     * @param line
-     * @param side
+     * @param line to remove unnecessary parentheses
+     * @param side to evaluate
      */
-    public static void delete(String line, String side) {
+    private void delete(String line, String side) {
         boolean inRight = false, inLeft = false;
         String auxR;
         String auxL;
@@ -192,6 +192,7 @@ public class Unify {
         }
         if (inLeft) {
             auxL = line.substring(1, line.length() - 1);
+            System.out.println();
             left.remove(0);
             left.add(0, auxL);
         }
@@ -202,10 +203,10 @@ public class Unify {
      * global Pattern.
      * it founds the matches with the line we've passed to the method.
      *
-     * @param line
-     * @return
+     * @param line to evaluate
+     * @return list of the free variables
      */
-    public static ArrayList<String> freeVariables(String line) {
+    private ArrayList<String> freeVariables(String line) {
 
         ArrayList<String> freeVar = new ArrayList<>();
 
@@ -224,9 +225,9 @@ public class Unify {
     }
 
     /**
-     * This method prints the substitions that we made and delete the ones that are repeated
+     * This method prints the substitutions that we made and delete the ones that are repeated
      */
-    public static void finalSubstitutions() {
+    private void finalSubstitutions() {
         for (int i = 0; i < substitutions.size(); i++) {
             for (int j = 0; j < substitutions.size(); j++) {
                 if (substitutions.get(i).equals(substitutions.get(j)))
@@ -243,19 +244,19 @@ public class Unify {
      * The other case if for unifying expressions that have the same thing on both sides of the equality, if that happen
      * it removes that line from the array.
      * if we have a variable on the left, and a term on the right, it goes until the third case, where all the
-     * ocurrences of the variable are replaced by the term.
+     * occurrences of the variable are replaced by the term.
      * the fourth case is the inverse of the third one
      * We use the last case for unifying functions on both sides,
      * Here we invoke the auxiliary methods for helping the unification
      *
-     * @param right
-     * @param left
+     * @param right Right side of te constraints
+     * @param left  Left side of te constraints
      */
-    public static void unify(ArrayList<String> right, ArrayList<String> left) {
+    private void unify(ArrayList<String> right, ArrayList<String> left) {
 
 
         if (right.isEmpty() && left.isEmpty()) {
-            System.out.println("Unifica");
+            System.out.println("Unify");
 
         } else {
             if (right.get(0).equals(left.get(0)) && !(right.get(0).contains("->") && left.get(0).contains("->"))) {
@@ -271,15 +272,11 @@ public class Unify {
                 unify(right, left);
 
 
-            } else if (pattern.matcher(left.get(0)).find() &&
-                    !pattern.matcher(left.get(0)).replaceAll(left.get(0).substring(0, 1)).contains("->")
-                    && pattern.matcher(right.get(0)).find()
-                    && !freeVariables(right.get(0)).contains(pattern.matcher(left.get(0))
-                    .replaceAll(left.get(0).substring(0, 1)))
-                    && !(right.get(0).contains("->") && left.get(0).contains("->"))) {
+            } else if (conditional("right")) {
 
                 String var = pattern.matcher(right.get(0)).replaceAll(right.get(0).substring(0, 1)).trim();
                 String var2 = pattern.matcher(left.get(0)).replaceAll(left.get(0).substring(0, 1)).trim();
+
                 for (int i = 0; i < left.size(); i++) {
                     if (left.get(i).equals(var2)) {
                         String aux = left.get(0).replace(var2, var).trim();
@@ -291,12 +288,7 @@ public class Unify {
                 unify(right, left);
 
 
-            } else if (pattern.matcher(left.get(0)).find() &&
-                    !pattern.matcher(right.get(0)).replaceAll(right.get(0).substring(0, 1)).contains("->")
-                    && pattern.matcher(right.get(0)).find() &&
-                    !freeVariables(left.get(0)).contains(pattern.matcher(right.get(0))
-                            .replaceAll(right.get(0).substring(0, 1)))
-                    && !(right.get(0).contains("->") && left.get(0).contains("->"))) {
+            } else if (conditional("left")) {
 
                 String var = pattern.matcher(left.get(0)).replaceAll(left.get(0).substring(0, 1)).trim();
                 String var2 = pattern.matcher(right.get(0)).replaceAll(right.get(0).substring(0, 1)).trim();
@@ -331,6 +323,36 @@ public class Unify {
             } else
                 System.out.println("fail");
         }
+    }
+
+    /**
+     * This is an auxiliary method for the conditional of 3rd and 4th case in the Unify method
+     *
+     * @param side to evaluate
+     **/
+    private boolean conditional(String side) {
+        if (side.equalsIgnoreCase("right")) {
+            return conditional(left, right);
+        } else if (side.equalsIgnoreCase("left")) {
+            return conditional(right, left);
+        }
+        return false;
+    }
+
+    /**
+     * This method return a Bool that say us the condition of the
+     * case 3 and 4 and allow the pass to that case
+     *
+     * @param left  ArrayList to evaluate
+     * @param right ArrayList to evaluate
+     **/
+    private boolean conditional(ArrayList<String> left, ArrayList<String> right) {
+        return
+                pattern.matcher(left.get(0)).find() && pattern.matcher(right.get(0)).find()
+                        && !pattern.matcher(left.get(0)).replaceAll(left.get(0).substring(0, 1)).contains("->")
+                        && !freeVariables(right.get(0)).contains(pattern.matcher(left.get(0))
+                        .replaceAll(left.get(0).substring(0, 1)))
+                        && !(right.get(0).contains("->") && left.get(0).contains("->"));
     }
 
 }

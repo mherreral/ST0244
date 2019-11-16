@@ -1,0 +1,5 @@
+(a -> b) -> c = (j -> alfa) -> Nat
+omega = Bool -> Bool
+josefa -> omega = Nat
+
+
