@@ -18,3 +18,7 @@ Complied with openjdk 11.0.5
 
 The proyect has a file called Makefile, which is in charge of compiling the program, it runs the set of test cointained in the "test"
 directory
+
+### Acknowledgments
+
+We thank Santiago Hidalgo for providing the logical implementation of the "unnecessaryParentheses" method.
